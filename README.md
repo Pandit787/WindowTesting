@@ -1,5 +1,31 @@
 # WindowTesting
 
+cd WindowTesting
+
 chmod +x kali_security_scan.py
 
-sudo ./kali_security_scan.py
+./kali_security_scan.py
+
+# SQL Injection Tool
+
+chmod 777 SQLI.py
+
+python3 SQLI.py
+
+# Phishing Attack Tool 
+
+chmod 777 *
+
+python3 facebookphisher.sh
+
+python3 instaphisher.sh
+
+# Instagram Osint Tool
+
+chmod 777 *
+
+python3 igosint.py
+
+
+
+
