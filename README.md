@@ -2,9 +2,11 @@
 
 cd WindowTesting
 
+apt install python3
+
 chmod +x kali_security_scan.py
 
-./kali_security_scan.py
+python3 kali_security_scan.py
 
 # SQL Injection Tool
 
@@ -24,8 +26,7 @@ python3 instaphisher.sh
 
 chmod 777 *
 
+apt install instaloader
+
 python3 igosint.py
-
-
-
 
