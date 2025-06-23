@@ -36,14 +36,14 @@ def profile_information(loader, username):
         print("\033[32mID\033[0m :", profile.userid)
         print("\033[32mFull Name\033[0m :", profile.full_name)
         print("\033[32mBiography\033[0m :", profile.biography)
-        print("\033[32mBusiness Category Name\033[0m :", profile.business_category_name)
+        print("\033[32mBusiness Category\033[0m :", profile.business_category_name)
         print("\033[32mExternal URL\033[0m :", profile.external_url)
         print("\033[32mFollowers\033[0m :", profile.followers)
         print("\033[32mFollowees\033[0m :", profile.followees)
         print("\033[32mIs Private\033[0m :", profile.is_private)
         print("\033[32mIs Verified\033[0m :", profile.is_verified)
         print("\033[32mMedia Count\033[0m :", profile.mediacount)
-        print("\033[32mProfile Picture URL\033[0m :", profile.profile_pic_url)
+        print("\033[32mProfile Pic URL\033[0m :", profile.profile_pic_url)
 
     except Exception as e:
         print("Error fetching profile info:", e)
@@ -71,17 +71,21 @@ def fetch_post_info(loader, username):
         return []
 
 def download_posts(loader, username):
-    print("\n\033[33mDownloading all posts...\033[0m\n")
+    print("\n\033[33mDownloading all posts & profile picture...\033[0m\n")
     try:
         profile = instaloader.Profile.from_username(loader.context, username)
         posts = profile.get_posts()
 
-        download_path = os.path.join(os.getcwd(), "IG_OSINT")
+        download_path = os.path.join(os.getcwd(), "IG_OSINT", username)
         os.makedirs(download_path, exist_ok=True)
 
+        # Download profile picture
+        loader.download_profile(username, profile_pic_only=True, fast_update=True, filename_target=download_path)
+
+        # Download all posts
         for i, post in enumerate(posts, start=1):
             loader.download_post(post, target=download_path)
-            print(f"\033[41mPOST {i}\033[0m downloaded successfully.")
+            print(f"\033[41mPOST {i}\033[0m downloaded to {download_path}")
 
     except instaloader.exceptions.PrivateProfileNotFollowedException:
         print("This profile is private. You need to follow it to download posts.")
@@ -105,7 +109,7 @@ def options_menu(loader, username):
         print("\n\033[1;34mOptions:\033[0m")
         print("\033[1;33m[1]\033[0m \033[1;32mProfile Information\033[0m")
         print("\033[1;33m[2]\033[0m \033[1;32mPost Information\033[0m")
-        print("\033[1;33m[3]\033[0m \033[1;32mDownload all Posts\033[0m")
+        print("\033[1;33m[3]\033[0m \033[1;32mDownload all Posts & DP\033[0m")
         print("\033[1;33m[4]\033[0m \033[1;32mChange Username\033[0m")
         print("\033[1;33m[5]\033[0m \033[1;32mExit\033[0m")
 
