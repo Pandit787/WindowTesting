@@ -18,12 +18,9 @@ def get_api_key():
     print("2. Enable 'YouTube Data API v3'")
     print("3. Enter your key below\n")
     
-    # Use getpass for more secure input (doesn't echo characters)
     api_key = getpass.getpass("Enter your YouTube API key: ").strip()
-    
-    if not api_key or api_key.lower() == "your_api_key":
+    if not api_key or api_key.lower() == "AIzaSyCVwe4UnuNjKAoPJA2_b8H3DiFYf_pzTDU":
         raise ValueError("Invalid API key provided")
-    
     return api_key
 
 class YouTubeExtractor:
@@ -38,7 +35,6 @@ class YouTubeExtractor:
                 id=video_id
             )
             response = request.execute()
-            
             if not response.get('items'):
                 return {"error": "Video not found or API quota exceeded"}
                 
@@ -53,6 +49,31 @@ class YouTubeExtractor:
                 "likes": video['statistics'].get('likeCount', 'N/A'),
                 "comments": video['statistics'].get('commentCount', 'N/A'),
                 "thumbnail": video['snippet']['thumbnails']['high']['url']
+            }
+        except HttpError as e:
+            return {"error": f"API Error: {str(e)}"}
+
+    def get_channel_info(self, channel_id):
+        """Get basic information about a channel"""
+        try:
+            request = self.youtube.channels().list(
+                part="snippet,statistics",
+                id=channel_id
+            )
+            response = request.execute()
+            if not response.get('items'):
+                return {"error": "Channel not found or API quota exceeded"}
+
+            channel = response['items'][0]
+            return {
+                "channel_id": channel_id,
+                "title": channel['snippet']['title'],
+                "description": channel['snippet']['description'],
+                "published_at": channel['snippet']['publishedAt'],
+                "subscribers": channel['statistics'].get('subscriberCount', 'N/A'),
+                "total_views": channel['statistics'].get('viewCount', 'N/A'),
+                "total_videos": channel['statistics'].get('videoCount', 'N/A'),
+                "thumbnail": channel['snippet']['thumbnails']['high']['url']
             }
         except HttpError as e:
             return {"error": f"API Error: {str(e)}"}
